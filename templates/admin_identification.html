@@ -81,7 +81,7 @@
             {% for identification in identifications %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ identification.name }}</td>
+                <td>{{ identification.name|upper }}</td>
                 <td>{{ identification.description }}</td>
                 <td class="actions-cell">
                     <form class="delete-identification-form" method="POST" action="{{ url_for('delete_identification', id_identification=identification.id) }}">

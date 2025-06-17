@@ -197,6 +197,114 @@
             margin-top: 30px;
             text-align: center;
         }
+        @media (max-width: 768px) {
+            body {
+                padding: 0; /* Elimina el padding del body en móviles para que el contenedor ocupe todo el ancho */
+            }
+        
+            .container {
+                margin: 0; /* Elimina los márgenes laterales en móviles */
+                padding: 15px; /* Reduce el padding interno del contenedor */
+                box-shadow: none; /* Elimina la sombra para un aspecto más limpio en móviles */
+                border-radius: 0; /* Quita los bordes redondeados */
+            }
+        
+            .header h1 {
+                font-size: 24px; /* Reduce el tamaño del título principal */
+            }
+        
+            .header h2 {
+                font-size: 18px; /* Reduce el tamaño del subtítulo */
+            }
+        
+            .section-title {
+                font-size: 16px; /* Ajusta el tamaño de los títulos de sección */
+                padding: 8px 10px; /* Reduce el padding de los títulos de sección */
+            }
+        
+            /* Navegación Responsive */
+            .nav-bar {
+                flex-direction: column; /* Apila los elementos verticalmente */
+                align-items: center; /* Centra los elementos */
+                padding: 10px; /* Reduce el padding de la barra de navegación */
+            }
+        
+            .nav-links {
+                flex-direction: column; /* Apila los enlaces verticalmente */
+                margin-bottom: 10px; /* Espacio entre los enlaces y la información del usuario */
+                width: 100%; /* Haz que los enlaces ocupen todo el ancho */
+                text-align: center; /* Centra el texto de los enlaces */
+            }
+        
+            .nav-bar a {
+                margin: 5px 0; /* Espacio vertical entre los enlaces apilados */
+                font-size: 16px; /* Reduce el tamaño de fuente de los enlaces */
+                padding: 5px 0; /* Añade un poco de padding para hacerlos más fáciles de tocar */
+            }
+        
+            .user-info {
+                margin-right: 0; /* Elimina el margen derecho */
+                text-align: center; /* Centra la información del usuario */
+                margin-top: 5px; /* Espacio si el nav-links se envuelve */
+            }
+        
+            .user-info a {
+                display: block; /* Asegura que el enlace de cerrar sesión ocupe su propia línea */
+                margin-top: 5px; /* Espacio entre el nombre de usuario y cerrar sesión */
+            }
+        
+            /* Formularios y cuadrículas */
+            .form-grid {
+                grid-template-columns: 1fr; /* Cambia a una sola columna en pantallas pequeñas */
+                gap: 10px; /* Reduce el espacio entre los campos */
+            }
+        
+            .form-group label,
+            .form-group input {
+                font-size: 14px; /* Reduce el tamaño de fuente de etiquetas y entradas */
+            }
+        
+            /* Tablas (si hay alguna directamente en base.html o si se aplica globalmente) */
+            table {
+                min-width: 100%; /* Asegura que la tabla ocupe el 100% de su contenedor en móvil */
+                display: block; /* Permite que la tabla se desplace horizontalmente si es demasiado ancha */
+                overflow-x: auto; /* Habilita el scroll horizontal */
+                -webkit-overflow-scrolling: touch; /* Mejora el scroll en iOS */
+                white-space: nowrap; /* Evita que el contenido de la tabla se rompa */
+            }
+        
+            th, td {
+                white-space: normal; /* Permite que el texto se ajuste dentro de las celdas */
+            }
+        
+            /* Botones */
+            .btn {
+                padding: 8px 15px; /* Reduce el padding de los botones */
+                font-size: 14px; /* Reduce el tamaño de fuente de los botones */
+            }
+        
+            /* Mensajes de alerta */
+            .alert {
+                padding: 10px; /* Reduce el padding de las alertas */
+                font-size: 14px; /* Reduce el tamaño de fuente de las alertas */
+            }
+        }
+        
+        /* Ajustes para pantallas medianas (ej. tablets en modo retrato) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 25px; /* Ajusta el padding para tablets */
+            }
+        
+            .nav-bar a {
+                margin: 0 10px; /* Ajusta el margen de los enlaces de navegación */
+                font-size: 17px;
+            }
+        
+            .form-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajusta el mínimo para columnas */
+            }
+        }
     </style>
 </head>
 <body>

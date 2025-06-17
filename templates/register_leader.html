@@ -98,7 +98,12 @@
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
-        
+        .form-submit {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+            
     </style>
 </head>
 <body>
@@ -197,7 +202,9 @@
                 <button type="button" class="btn btn-primary" id="add-patrol-member-btn" style="margin-top: 15px;">Añadir Patrullero</button>
             </div>
 
-            <button type="submit" class="btn">Guardar Patrulla</button>
+            <div class="form-submit">
+                <button type="submit" class="btn">Guardar Patrulla</button>
+            </div>
         </form>
     </div> 
 
@@ -224,12 +231,15 @@
         document.addEventListener('DOMContentLoaded', function() {
             const tbody = document.getElementById('patrol-members-tbody');
             const addMemberBtn = document.getElementById('add-patrol-member-btn');
-            let memberCounter = 0; // Use a different name to avoid confusion with internal 'i'
-
+            let memberCounter = 0;
+            const MAX_PATROLLERS = 21;
+        
             function createMemberRow() {
+                if (memberCounter >= MAX_PATROLLERS) {
+                    return;
+                }
+        
                 const row = document.createElement('tr');
-                // We don't need a unique ID for the row itself if we re-index everything on delete
-                // The names will be re-assigned anyway.
                 row.innerHTML = `
                     <td>${memberCounter + 1}</td>
                     <td><input type="text" name="member_id_number_${memberCounter}" required></td>
@@ -249,46 +259,55 @@
                     </td>
                 `;
                 tbody.appendChild(row);
-                memberCounter++; // Increment for the next member
-                updateRowIndexes(); // Call this to ensure consistent numbering
+                memberCounter++;
+                updateRowIndexes();
+                
+                // Ocultar botón si llegamos al límite
+                toggleAddButtonVisibility();
             }
-
-            // Add event listener for the "Add Patrullero" button
+        
+            function toggleAddButtonVisibility() {
+                if (memberCounter >= MAX_PATROLLERS) {
+                    addMemberBtn.style.display = 'none';
+                } else {
+                    addMemberBtn.style.display = 'inline-block';
+                }
+            }
+        
             addMemberBtn.addEventListener('click', createMemberRow);
-
-            // Add event listener for removing a member (delegated to tbody)
+        
             tbody.addEventListener('click', function(event) {
                 if (event.target.classList.contains('remove-member-btn')) {
-                    const rowToRemove = event.target.closest('tr'); // Find the closest table row
+                    const rowToRemove = event.target.closest('tr');
                     if (rowToRemove) {
                         rowToRemove.remove();
-                        updateRowIndexes(); // Re-index all remaining rows
+                        memberCounter--;
+                        updateRowIndexes();
+                        // Mostrar botón si ahora hay menos de 21
+                        toggleAddButtonVisibility();
                     }
                 }
             });
-
-            // --- NEW/MODIFIED FUNCTION: Re-index all rows ---
+        
             function updateRowIndexes() {
                 const rows = tbody.querySelectorAll('tr');
                 rows.forEach((row, index) => {
-                    // Update the displayed row number
                     row.querySelector('td:first-child').textContent = index + 1;
-
-                    // Update the 'name' attributes for all input fields in this row
+        
                     row.querySelectorAll('input, select').forEach(input => {
                         const oldName = input.name;
-                        if (oldName) { // Make sure the element has a name attribute
-                            // Extract the prefix (e.g., "member_id_number_")
+                        if (oldName) {
                             const nameParts = oldName.split('_');
                             const prefix = nameParts.slice(0, nameParts.length - 1).join('_');
-                            input.name = `${prefix}_${index}`; // Assign the new index
+                            input.name = `${prefix}_${index}`;
                         }
                     });
                 });
-                // Update the memberCounter to reflect the actual number of rows
                 memberCounter = rows.length;
             }
-
+        
+            // Inicializar visibilidad del botón
+            toggleAddButtonVisibility();
             // Add one initial row when the page loads
             createMemberRow();
         });

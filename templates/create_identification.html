@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="header">
-        <h1>Añadir identificaciones</h1>
+    <div class="header" style="position: relative; text-align: center;">
+        <a href="{{ url_for('admin_identification') }}" style="position: absolute; left: 0; text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="margin: 0; display: inline-block;">Añadir identificaciones</h1>
     </div>
 
     <form method="POST" style="max-width: 600px; margin: 0 auto;">

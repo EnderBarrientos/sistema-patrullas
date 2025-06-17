@@ -88,25 +88,25 @@
     <div class="dashboard-grid">
         {% if current_user.is_admin %}
         
-        <a href="{{ url_for('create_user') }}" class="dashboard-card">
+        <a href="{{ url_for('admin_user') }}" class="dashboard-card">
             <i class="fas fa-users"></i>
             <div class="card-title">Usuarios</div>
             <div class="card-description">Gestionar y crear cuentas de usuarios.</div>
         </a>
 
-        <a href="" class="dashboard-card">
+        <a href="{{ url_for('admin_patrol_leader') }}" class="dashboard-card">
             <i class="fas fa-user-shield"></i>
-            <div class="card-title">Jefes de Patrullas</div>
+            <div class="card-title">Jefes de Patrulla</div>
             <div class="card-description">Administrar responsables de patrulla.</div>
         </a>
 
-        <a href="{{ url_for('create_voting_center') }}" class="dashboard-card">
+        <a href="{{ url_for('admin_voting_center') }}" class="dashboard-card">
             <i class="fas fa-landmark"></i>
             <div class="card-title">Centros de Votación</div>
             <div class="card-description">Configurar centros de votación.</div>
         </a>
 
-        <a href="{{ url_for('create_identification') }}" class="dashboard-card">
+        <a href="{{ url_for('admin_identification') }}" class="dashboard-card">
             <i class="fas fa-id-card"></i>
             <div class="card-title">Identificaciones</div>
             <div class="card-description">Definir tipos de identificación.</div>

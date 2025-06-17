@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="header" style="position: relative; text-align: center;">
+        <a href="{{ url_for('admin_site') }}" style="position: absolute; left: 0; text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="margin: 0; display: inline-block;">Usuarios</h1>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>CÉDULA</th>
+                <th>NOMBRE</th>
+                <th>ADMINISTRADOR</th>
+                <th>CÉDULA JEFE DE PATRULLA</th>
+                <th>JEFE DE PATRULLA</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.id_number }}</td>
+                <td>{{ user.name }}</td>
+                <td>
+                    {% if user.is_admin %}
+                        Sí
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.leader %}
+                        {{ user.leader.id_number }}
+                    {% else %}
+                        No registrado
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.leader %}
+                        {{ user.leader.person_in_charge }}
+                    {% else %}
+                        No registrado
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No hay usuarios registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+        <p style="margin-top: 15px;"><strong>Total de usuarios:</strong> {{ users|length }}</p>
+        <a href="{{ url_for('create_user') }}" class="btn btn-success">Agregar Usuario</a>
+    </div>
+{% endblock %}

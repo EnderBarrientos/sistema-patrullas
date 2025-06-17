@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="header" style="position: relative; text-align: center;">
+        <a href="{{ url_for('admin_site') }}" style="position: absolute; left: 0; text-decoration: none; font-size: 24px;">←</a>
+        <h1 style="margin: 0; display: inline-block;">Jefes de Patrulla</h1>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>CÉDULA</th>
+                <th>USUARIO</th>
+                <th>RESPONSABLE</th>
+                <th>TELÉFONO</th>
+                <th>ZONA</th>
+                <th>CENTRO DE VOTACIÓN</th>
+                <th class="actions-header">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leader in leaders %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ leader.PatrolLeader.id_number }}</td>
+                <td>{{ leader.PatrolLeader.user.name }}</td>
+                <td>{{ leader.PatrolLeader.person_in_charge }}</td>
+                <td>{{ leader.PatrolLeader.phone_number }}</td>
+                <td>{{ leader.PatrolLeader.zone }}</td>
+                <td>{{ leader.VotingCenter.name }}</td>
+                <td class="actions-cell">
+                <a href="{{ url_for('print_patrol', id_leader = leader.PatrolLeader.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center;">No hay jefes de patrulla registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="margin-top: 15px;"><strong>Total de jefes:</strong> {{ leaders|length }}</p>
+{% endblock %}

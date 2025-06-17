@@ -260,7 +260,24 @@ def admin_site():
     
     return render_template('admin_site.html')
 
-@app.route('/admin/create-user', methods=['GET', 'POST'])
+#------------------------------------------------------------------------------#
+    # Administrar Usuarios
+#------------------------------------------------------------------------------#
+
+@app.route('/admin/user', methods=['GET', 'POST'])
+@login_required
+def admin_user():
+    
+    if not current_user.is_admin:
+        flash('Acceso no autorizado', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    # Filtrar usuarios excluyendo al usuario actual
+    users = User.query.filter(User.id != current_user.id).all()
+    
+    return render_template('admin_user.html', users=users)
+
+@app.route('/admin/user/create', methods=['GET', 'POST'])
 @login_required
 def create_user():
     if not current_user.is_admin:
@@ -289,15 +306,44 @@ def create_user():
         db.session.commit()
         
         flash(f'Usuario {name} creado exitosamente. Contraseña inicial: 123456', 'success')
-        return redirect(url_for('create_user'))
+        return redirect(url_for('admin_user'))
     
     return render_template('create_user.html')
+
+
+#------------------------------------------------------------------------------#
+    # Administrar Jefes de Patrullas
+#------------------------------------------------------------------------------#
+
+@app.route('/admin/patrol-leader', methods=['GET', 'POST'])
+@login_required
+def admin_patrol_leader():
+    
+    if not current_user.is_admin:
+        flash('Acceso no autorizado', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    patrol_leaders = PatrolLeader.query.join(VotingCenter).add_entity(VotingCenter).all()
+    
+    return render_template('admin_patrol_leader.html', leaders=patrol_leaders)
 
 #------------------------------------------------------------------------------#
     # Administrar Centros de Votación
 #------------------------------------------------------------------------------#
 
 @app.route('/admin/voting-center', methods=['GET', 'POST'])
+@login_required
+def admin_voting_center():
+    
+    if not current_user.is_admin:
+        flash('Acceso no autorizado', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    voting_centers = VotingCenter.query.all()
+    
+    return render_template('admin_voting_center.html', centers=voting_centers)
+
+@app.route('/admin/voting-center/create', methods=['GET', 'POST'])
 @login_required
 def create_voting_center():
     if not current_user.is_admin:
@@ -321,15 +367,62 @@ def create_voting_center():
         db.session.commit()
         
         flash(f'Centro de votación {name} creado exitosamente.', 'success')
-        return redirect(url_for('create_voting_center'))
+        return redirect(url_for('admin_voting_center'))
     
     return render_template('create_voting_center.html')
 
+@app.route('/delete-center/<int:id_center>', methods=['POST'])
+@login_required
+def delete_center(id_center):
+    center = VotingCenter.query.get_or_404(id_center)
+    
+    # Verificar permisos
+    if not current_user.is_admin:
+        flash('No tienes permiso para eliminar este centro', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    # Verificar asociaciones
+    has_leaders = PatrolLeader.query.filter_by(id_voting_center=id_center).first() is not None
+    has_members = PatrolMember.query.filter_by(id_voting_center=id_center).first() is not None
+    
+    if has_leaders or has_members:
+        leader_count = PatrolLeader.query.filter_by(id_voting_center=id_center).count()
+        member_count = PatrolMember.query.filter_by(id_voting_center=id_center).count()
+        
+        flash_message = (
+            f'No se puede eliminar el centro "{center.name}" porque está asociado a: '
+            f'{leader_count} jefe(s) de patrulla y {member_count} patrullero(s). '
+            'Primero debe reasignar o eliminar estos registros.'
+        )
+        flash(flash_message, 'danger')
+        return redirect(url_for('admin_voting_center'))
+    
+    try:
+        db.session.delete(center)
+        db.session.commit()
+        flash('Centro eliminado exitosamente.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al eliminar centro de votación: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_voting_center'))
 #------------------------------------------------------------------------------#
     # Administrar Identificaciones
 #------------------------------------------------------------------------------#
 
 @app.route('/admin/identification', methods=['GET', 'POST'])
+@login_required
+def admin_identification():
+    
+    if not current_user.is_admin:
+        flash('Acceso no autorizado', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    identifications = Identification.query.all()
+    
+    return render_template('admin_identification.html', identifications=identifications)
+
+@app.route('/admin/identification/create', methods=['GET', 'POST'])
 @login_required
 def create_identification():
     if not current_user.is_admin:
@@ -352,22 +445,45 @@ def create_identification():
         db.session.commit()
         
         flash(f'Identificación {name} creado exitosamente.', 'success')
-        return redirect(url_for('create_identification'))
+        return redirect(url_for('admin_identification'))
     
     return render_template('create_identification.html')
 
-#------------------------------------------------------------------------------#
-    # Mostrar Centros de Votación
-#------------------------------------------------------------------------------#
 
-@app.route('/index/voting-center', methods=['GET', 'POST'])
+@app.route('/delete-identification/<int:id_identification>', methods=['POST'])
 @login_required
-def index_voting_center():
+def delete_identification(id_identification):
+    identification = Identification.query.get_or_404(id_identification)
     
-    voting_centers = VotingCenter.query.order_by(VotingCenter.name).all()
+    # Verificar permisos
+    if not current_user.is_admin:
+        flash('No tienes permiso para eliminar esta identificación', 'danger')
+        return redirect(url_for('dashboard'))
     
-    return render_template('create_voting_center.html')
-
+    # Verificar asociaciones con jefes de patrulla
+    has_leader_associations = LeaderIdentification.query.filter_by(id_identification=id_identification).first() is not None
+    
+    if has_leader_associations:
+        association_count = LeaderIdentification.query.filter_by(id_identification=id_identification).count()
+        
+        flash_message = (
+            f'No se puede eliminar la identificación "{identification.name}" porque está asociada a: '
+            f'{association_count} jefe(s) de patrulla. '
+            'Primero debe reasignar o eliminar estas asociaciones.'
+        )
+        flash(flash_message, 'danger')
+        return redirect(url_for('admin_identification'))  # Asegúrate de tener esta ruta definida
+    
+    try:
+        # Eliminar la identificación
+        db.session.delete(identification)
+        db.session.commit()
+        flash('Identificación eliminada exitosamente', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al eliminar la identificación: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_identification'))  # Redirigir a la vista de administración de identificaciones
 
 #------------------------------------------------------------------------------#
     # Registrar Jefe de Patrulla
@@ -612,7 +728,7 @@ def edit_member(id_member):
     voting_centers = VotingCenter.query.order_by(VotingCenter.name).all()
     
     # Verificar permisos
-    if not current_user.is_admin and (not current_user.jefe or current_user.leader.id != id_leader):
+    if not current_user.is_admin and (not current_user.leader or current_user.leader.id != id_leader):
         flash('No tienes permiso para eliminar este patrullero', 'danger')
         return redirect(url_for('dashboard'))
     
@@ -649,7 +765,7 @@ def delete_member(id_member):
     id_leader = member.id_patrol_leader
     
     # Verificar permisos
-    if not current_user.is_admin and (not current_user.jefe or current_user.leader.id != id_leader):
+    if not current_user.is_admin and (not current_user.leader or current_user.leader.id != id_leader):
         flash('No tienes permiso para eliminar este patrullero', 'danger')
         return redirect(url_for('dashboard'))
     
@@ -708,7 +824,7 @@ def export_pdf(id_leader):
 @app.route('/print-patrol/<int:id_leader>')
 @login_required
 def print_patrol(id_leader):
-    if not current_user.is_admin and (not current_user.jefe or current_user.jefe.id != id_leader):
+    if not current_user.is_admin and (not current_user.leader or current_user.leader.id != id_leader):
         flash('No tienes permiso para imprimir esta patrulla', 'danger')
         return redirect(url_for('dashboard'))
     

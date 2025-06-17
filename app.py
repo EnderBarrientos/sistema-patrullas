@@ -642,4 +642,4 @@ if __name__ == '__main__':
             db.session.commit()
             print('Usuario admin creado: cedula=admin, password=123456')
     
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

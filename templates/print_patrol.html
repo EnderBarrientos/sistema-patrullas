@@ -13,6 +13,23 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
         th, td { border: 1px solid #000; padding: 5px; }
         th { background-color: #e0e0e0; text-align: center; }
+        tbody { text-align: center; }
+        .three-columns { 
+            display: flex; 
+            flex-wrap: wrap;
+            margin-top: 10px;
+            align-items: flex-start; 
+        }
+
+        .identification-display-item, .other-identification-item {
+            display: inline; 
+            font-weight: bold; 
+            white-space: nowrap; 
+        }
+        /* Estilo para el separador */
+        .separator {
+            margin-right: 5px; /* Espacio después de la coma */
+        }
         @media print {
             body { margin: 0; padding: 10px; }
             .no-print { display: none; }
@@ -22,7 +39,6 @@
 <body>
     <h1>PATRULLA DEL ACTIVISTA 1x10 TERRITORIAL</h1>
     
-    <!-- Responsable -->
     <div class="section">
         <div class="section-title">RESPONSABLE DE PATRULLA</div>
         <div class="info-grid">
@@ -33,33 +49,36 @@
         </div>
     </div>
 
-    <!-- Identificación -->
     <div class="section">
         <div class="section-title">IDENTIFICACIÓN DEL PATRULLERO</div>
         <div class="three-columns">
+            {% set total_identifications = identifications|length if identifications else 0 %}
+            {% set has_other_identification = leader.other_identification is not none and leader.other_identification != '' %}
+            {% set current_index = 0 %}
+
             {% if identifications or leader.other_identification %}
                 {% if identifications %}
                     {% for identification in identifications %}
-                        <div class="option-item">
-                            <strong>{{ identification.identification.name|upper }}</strong>
-                        </div>
+                        <span class="identification-display-item">
+                            {{ identification.identification.name|upper }}
+                        </span>{% set current_index = loop.index %}
+                        {% if current_index < total_identifications or has_other_identification %}<span class="separator">,</span>{% endif %}
                     {% endfor %}
                 {% endif %}
                 
                 {% if leader.other_identification %}
-                    <div class="option-item">
+                    <span class="other-identification-item">
                         <strong>OTRO: </strong> {{ leader.other_identification|upper }}
-                    </div>
+                    </span>
                 {% endif %}
             {% else %}
-                <div class="option-item">
+                <span class="identification-display-item">
                     <strong>NO SE LE ASIGNÓ NINGUNA IDENTIFICACIÓN</strong>
-                </div>
+                </span>
             {% endif %}
         </div>
     </div>
 
-    <!-- Patrulleros -->
     <div class="section">
         <div class="section-title">PATRULLEROS</div>
         <table>
@@ -81,7 +100,7 @@
                     <td>{{ member.name }}</td>
                     <td>{{ member.phone_number }}</td>
                     <td>{{ member.direction }}</td>
-                    <td>{{ member.member_voting_center.name  }}</td>
+                    <td>{{ member.member_voting_center.name }}</td>
                 </tr>
                 {% else %}
                 <tr>

@@ -251,6 +251,9 @@ def dashboard():
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin_site():
+    if current_user.first_login:
+        return redirect(url_for('change_password'))
+    
     if not current_user.is_admin:
         flash('Acceso no autorizado', 'danger')
         return redirect(url_for('dashboard'))
@@ -665,13 +668,14 @@ def delete_member(id_member):
 def export_pdf(id_leader):
     leader = PatrolLeader.query.get_or_404(id_leader)
     members = PatrolMember.query.filter_by(id_patrol_leader=id_leader).order_by(PatrolMember.created_at).all()
+    identifications = LeaderIdentification.query.filter_by(id_patrol_leader=id_leader).all()
 
     if not leader:
         flash(f'Jefe de Patrulla con ID {id_leader} no encontrado.', 'danger')
         return redirect(url_for('dashboard'))
 
     # Renderizar plantilla HTML
-    rendered = render_template('print_patrol.html', leader=leader, members=members)
+    rendered = render_template('print_patrol.html', leader=leader, members=members, identifications=identifications)
 
     # Crear el archivo PDF en memoria
     pdf_buffer = BytesIO()

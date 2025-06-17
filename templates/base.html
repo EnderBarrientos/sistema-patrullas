@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Patrullas 1x10</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1a237e;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #1a237e;
+        }
+        .header h2 {
+            margin: 5px 0 0;
+            font-size: 22px;
+            color: #283593;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            background-color: #1a237e;
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #1a237e;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        .patrullero-header {
+            background-color: #1a237e;
+            color: white;
+            padding: 12px;
+            margin: 30px 0 15px;
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th {
+            background-color: #283593;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #1a237e;
+            color: white;
+            border: none;
+        }
+        .btn-success {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .patrullero-row input {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .alert-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+            border: 1px solid #faebcc;
+        }
+        .alert-info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+        }
+        .nav-bar {
+            background-color: #1a237e;
+            padding: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .nav-links {
+            display: flex;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .user-info {
+            color: white;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Inicio</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}">Panel de Control</a>
+                {% if current_user.is_admin %}
+                    <a href="{{ url_for('crear_usuario') }}">Crear Usuario</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% if current_user.is_authenticated %}
+            <div class="user-info">
+                {{ current_user.nombre }} ({{ current_user.cedula }})
+                <a href="{{ url_for('logout') }}">Cerrar Sesión</a>
+            </div>
+        {% else %}
+            <div>
+                <a href="{{ url_for('login') }}">Iniciar Sesión</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="header">
+        <h1>Panel de Control</h1>
+        <h2>Bienvenido, {{ current_user.nombre }}</h2>
+    </div>
+    
+    <div style="text-align: center; padding: 50px;">
+        <h2 style="color: #1a237e;">No tienes una patrulla registrada</h2>
+        <p style="font-size: 18px;">
+            Para registrar una nueva patrulla como jefe, haz clic en el siguiente botón.
+        </p>
+        
+        <div class="actions">
+            <a href="{{ url_for('registro_jefe') }}" class="btn btn-success">
+                Registrar Nueva Patrulla
+            </a>
+        </div>
+    </div>
+{% endblock %}

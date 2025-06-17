@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Patrulla {{ jefe.responsable }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .header { background-color: #333; color: white; padding: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .section { background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
+        .section-title { background-color: #f0f0f0; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .info-group { margin-bottom: 15px; }
+        .info-label { font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        .btn { display: inline-block; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-right: 10px; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .actions-header { width: 150px; }
+        .actions-cell { display: flex; gap: 5px; }
+        .three-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .option-item { padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Patrulla de {{ jefe.responsable }}</h1>
+    </div>
+    
+    <div class="container">
+        <div class="actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Volver al Panel</a>
+            <a href="{{ url_for('imprimir_patrulla', jefe_id=jefe.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
+        </div>
+        
+        <!-- Sección 1: Responsable de Patrulla (solo lectura) -->
+        <div class="section">
+            <h2 class="section-title">RESPONSABLE DE PATRULLA</h2>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">Responsable:</div>
+                    <div>{{ jefe.responsable }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Cédula:</div>
+                    <div>{{ jefe.cedula }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Centro de Votación:</div>
+                    <div>{{ jefe.centro_votacion }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Teléfono:</div>
+                    <div>{{ jefe.telefono }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Sector:</div>
+                    <div>{{ jefe.sector }}</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Sección 2: Identificación del Patrullero (solo opciones seleccionadas) -->
+        <div class="section">
+            <div class="section-title">IDENTIFICACIÓN DEL PATRULLERO (Selecciones marcadas con X)</div>
+            <div class="three-columns">
+                {% if jefe.epm %}<div class="option-item"><strong>EPM:</strong> X</div>{% endif %}
+                {% if jefe.ubch %}<div class="option-item"><strong>UBCH:</strong> X</div>{% endif %}
+                {% if jefe.comunidad %}<div class="option-item"><strong>COMUNIDAD:</strong> X</div>{% endif %}
+                {% if jefe.calle %}<div class="option-item"><strong>CALLE:</strong> X</div>{% endif %}
+                {% if jefe.militante %}<div class="option-item"><strong>MILITANTE:</strong> X</div>{% endif %}
+                {% if jefe.clap %}<div class="option-item"><strong>CLAP:</strong> X</div>{% endif %}
+                {% if jefe.mgm %}<div class="option-item"><strong>MGM:</strong> X</div>{% endif %}
+                {% if jefe.mujeres %}<div class="option-item"><strong>MUJERES:</strong> X</div>{% endif %}
+                {% if jefe.sv %}<div class="option-item"><strong>SV:</strong> X</div>{% endif %}
+                {% if jefe.milicia %}<div class="option-item"><strong>MILICIA:</strong> X</div>{% endif %}
+                {% if jefe.consejo_comunal %}<div class="option-item"><strong>CONSEJO COMUNAL:</strong> X</div>{% endif %}
+                {% if jefe.comuna %}<div class="option-item"><strong>COMUNA:</strong> X</div>{% endif %}
+                {% if jefe.cir_comunal %}<div class="option-item"><strong>CIR COMUNAL:</strong> X</div>{% endif %}
+                {% if jefe.gppsb %}<div class="option-item"><strong>GPPSB:</strong> X</div>{% endif %}
+                {% if jefe.mov_sociales %}<div class="option-item"><strong>MOV SOCIALES:</strong> X</div>{% endif %}
+                {% if jefe.salud %}<div class="option-item"><strong>SALUD:</strong> X</div>{% endif %}
+                {% if jefe.educacion %}<div class="option-item"><strong>EDUCACION:</strong> X</div>{% endif %}
+                {% if jefe.corpoelec %}<div class="option-item"><strong>CORPOELEC:</strong> X</div>{% endif %}
+                {% if jefe.h2o %}<div class="option-item"><strong>H2O:</strong> X</div>{% endif %}
+                {% if jefe.saren %}<div class="option-item"><strong>SAREN:</strong> X</div>{% endif %}
+                {% if jefe.policia %}<div class="option-item"><strong>POLICIA:</strong> X</div>{% endif %}
+                {% if jefe.ffm %}<div class="option-item"><strong>FFM:</strong> X</div>{% endif %}
+                {% if jefe.linder %}<div class="option-item"><strong>LINDER:</strong> X</div>{% endif %}
+                {% if jefe.otro %}<div class="option-item"><strong>OTRO:</strong> {{ jefe.otro }}</div>{% endif %}
+            </div>
+        </div>
+
+        <!-- Sección 3: Tabla de Patrulleros con acciones -->
+        <div class="section">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>PATRULLEROS</h2>
+                {% if patrulleros|length < 21 %}
+                <a href="{{ url_for('agregar_patrullero', jefe_id=jefe.id) }}" class="btn btn-success">Agregar Patrullero</a>
+                {% endif %}
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>CÉDULA</th>
+                        <th>NOMBRES Y APELLIDOS</th>
+                        <th>TELÉFONO</th>
+                        <th>DIRECCIÓN</th>
+                        <th>CENTRO DE VOTACIÓN</th>
+                        <th class="actions-header">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in patrulleros %}
+                    <tr>
+                        <td>{{ p.numero }}</td>
+                        <td>{{ p.cedula }}</td>
+                        <td>{{ p.nombres_apellidos }}</td>
+                        <td>{{ p.telefono }}</td>
+                        <td>{{ p.direccion }}</td>
+                        <td>{{ p.centro_votacion }}</td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('editar_patrullero', patrullero_id=p.id) }}" class="btn btn-warning">Editar</a>
+                            <form method="POST" action="{{ url_for('eliminar_patrullero', patrullero_id=p.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este patrullero?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No hay patrulleros registrados</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p style="margin-top: 15px;"><strong>Total de patrulleros:</strong> {{ patrulleros|length }} / 21</p>
+        </div>
+    </div>
+</body>
+</html>

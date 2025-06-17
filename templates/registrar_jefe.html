@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Patrulla 1x10</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .header { background-color: #333; color: white; padding: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .section { background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
+        .section-title { background-color: #f0f0f0; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background-color: #218838; }
+        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; }
+        .checkbox-group { display: flex; align-items: center; }
+        .checkbox-group input { width: auto; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Registro de Patrulla 1x10</h1>
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('registro_jefe') }}">
+            <!-- Sección 1: Responsable de Patrulla -->
+            <div class="section">
+                <h2 class="section-title">RESPONSABLE DE PATRULLA</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Responsable:</label>
+                        <input type="text" name="responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cédula:</label>
+                        <input type="text" name="cedula" required>
+                        <small>No debe estar registrada como patrullero o jefe en otra patrulla</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Centro de Votación:</label>
+                        <input type="text" name="centro_votacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="text" name="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label>Sector:</label>
+                        <input type="text" name="sector">
+                    </div>
+					 
+                </div>
+            </div>
+
+            <!-- Sección 2: Identificación del Patrullero (con checkboxes) -->
+<div class="section">
+    <h2 class="section-title">IDENTIFICACIÓN DEL PATRULLERO</h2>
+    <p>Seleccione las opciones que correspondan:</p>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="epm" value="true">
+                EPM
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="ubch" value="true">
+                UBCH
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="comunidad" value="true">
+                COMUNIDAD
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="calle" value="true">
+                CALLE
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="militante" value="true">
+                MILITANTE
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="clap" value="true">
+                CLAP
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="mgm" value="true">
+                MGM
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="mujeres" value="true">
+                MUJERES
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="sv" value="true">
+                SV
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="milicia" value="true">
+                MILICIA
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="consejo_comunal" value="true">
+                CONSEJO COMUNAL
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="comuna" value="true">
+                COMUNA
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="cir_comunal" value="true">
+                CIR COMUNAL
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="gppsb" value="true">
+                GPPSB
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="mov_sociales" value="true">
+                MOV SOCIALES
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="salud" value="true">
+                SALUD
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="educacion" value="true">
+                EDUCACION
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="corpoelec" value="true">
+                CORPOELEC
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="h2o" value="true">
+                HIDROSUROESTE
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="saren" value="true">
+                SAREN
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="policia" value="true">
+                POLICIA
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="ffm" value="true">
+                FFM
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="linder" value="true">
+                LINDER
+            </label>
+        </div>
+        <div class="form-group">
+            <label>OTRO ESPECIFICAR:</label>
+            <input type="text" name="otro">
+        </div>
+    </div>
+</div>
+
+
+            <!-- Sección 3: Tabla de Patrulleros -->
+            <div class="section">
+                <h2 class="section-title">PATRULLEROS</h2>
+                <p><strong>Nota:</strong> Cada cédula debe ser única y no puede estar registrada como jefe o patrullero en otra patrulla</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>CÉDULA</th>
+                            <th>NOMBRES Y APELLIDOS</th>
+                            <th>TELÉFONO</th>
+                            <th>DIRECCIÓN</th>
+                            <th>CENTRO DE VOTACIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(1, 22) %}
+                        <tr>
+                            <td>{{ i }}</td>
+                            <td><input type="text" name="cedula_{{ i }}"></td>
+                            <td><input type="text" name="nombres_{{ i }}"></td>
+                            <td><input type="text" name="telefono_{{ i }}"></td>
+                            <td><input type="text" name="direccion_{{ i }}"></td>
+                            <td><input type="text" name="centro_votacion_{{ i }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="btn">Guardar Patrulla</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .header { background-color: #333; color: white; padding: 15px; display: flex; justify-content: space-between; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .card { border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
+        .card-header { background-color: #f5f5f5; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
+        .btn { display: inline-block; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-right: 10px; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-info { background-color: #17a2b8; color: white; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>Bienvenido, {{ current_user.nombre }} ({{ current_user.cedula }})</div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Inicio</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>Panel de Control</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Tu Patrulla</h2>
+            </div>
+            <p><strong>Responsable:</strong> {{ jefe.responsable }}</p>
+            <p><strong>Cédula:</strong> {{ jefe.cedula }}</p>
+            <p><strong>Centro de Votación:</strong> {{ jefe.centro_votacion }}</p>
+            
+            <div class="btn-group">
+                <a href="{{ url_for('ver_patrulla', jefe_id=jefe.id) }}" class="btn btn-primary">Ver Detalles</a>
+                <a href="{{ url_for('imprimir_patrulla', jefe_id=jefe.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
+            </div>
+        </div>
+        
+        {% if current_user.is_admin %}
+        <div class="card">
+            <div class="card-header">
+                <h2>Administración</h2>
+            </div>
+            <div class="btn-group">
+                <a href="{{ url_for('crear_usuario') }}" class="btn btn-primary">Crear Nuevo Usuario</a>
+                <a href="{{ url_for('exportar_excel') }}" class="btn btn-info">Exportar a Excel</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

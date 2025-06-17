@@ -1,0 +1,41 @@
+from flask import Flask, render_template, request, redirect, url_for, session
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Clave necesaria para usar sesiones
+
+# Clave inicial
+CLAVE_INICIAL = "123456"
+
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        cedula = request.form['cedula']
+        clave = request.form['clave']
+        
+        # Validar credenciales
+        if clave == CLAVE_INICIAL:
+            session['usuario'] = cedula
+            return redirect(url_for('menu'))
+        else:
+            error = 'Credenciales inválidas. Intente nuevamente.'
+    
+    return render_template('login.html', error=error)
+
+@app.route('/menu')
+def menu():
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    return render_template('menu.html', usuario=session['usuario'])
+
+@app.route('/logout')
+def logout():
+    session.pop('usuario', None)
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Patrulla 1x10 - {{ jefe.responsable }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; font-size: 12px; }
+        h1 { text-align: center; font-size: 16px; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; page-break-inside: avoid; }
+        .section-title { background: #f0f0f0; padding: 5px 10px; font-weight: bold; border: 1px solid #ccc; }
+        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .info-item { margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
+        th, td { border: 1px solid #000; padding: 5px; }
+        th { background-color: #e0e0e0; text-align: center; }
+        @media print {
+            body { margin: 0; padding: 10px; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1>PATRULLA DEL ACTIVISTA 1x10 TERRITORIAL</h1>
+    
+    <!-- Responsable -->
+    <div class="section">
+        <div class="section-title">RESPONSABLE DE PATRULLA</div>
+        <div class="info-grid">
+            <div class="info-item"><strong>Responsable:</strong> {{ jefe.responsable }}</div>
+            <div class="info-item"><strong>Cédula:</strong> {{ jefe.cedula }}</div>
+            <div class="info-item"><strong>Centro de Votación:</strong> {{ jefe.centro_votacion }}</div>
+            <div class="info-item"><strong>Teléfono:</strong> {{ jefe.telefono }}</div>
+        </div>
+    </div>
+
+    <!-- Identificación -->
+    <!-- Identificación -->
+<div class="section">
+    <div class="section-title">IDENTIFICACIÓN DEL PATRULLERO</div>
+    <div class="three-columns">
+        {% for field in [
+            ('EPM', jefe.epm),
+            ('UBCH', jefe.ubch),
+            ('COMUNIDAD', jefe.comunidad),
+            ('CALLE', jefe.calle),
+            ('MILITANTE', jefe.militante),
+            ('CLAP', jefe.clap),
+            ('MGM', jefe.mgm),
+            ('MUJERES', jefe.mujeres),
+            ('SV', jefe.sv),
+            ('MILICIA', jefe.milicia),
+            ('CONSEJO COMUNAL', jefe.consejo_comunal),
+            ('COMUNA', jefe.comuna),
+            ('CIR COMUNAL', jefe.cir_comunal),
+            ('GPPSB', jefe.gppsb),
+            ('MOV SOCIALES', jefe.mov_sociales),
+            ('SALUD', jefe.salud),
+            ('EDUCACION', jefe.educacion),
+            ('CORPOELEC', jefe.corpoelec),
+            ('H2O', jefe.h2o),
+            ('SAREN', jefe.saren),
+            ('POLICIA', jefe.policia),
+            ('FFM', jefe.ffm),
+            ('LINDER', jefe.linder)
+        ] %}
+            {% if field[1] %}
+                <div><strong>{{ field[0] }}:</strong> X</div>
+            {% endif %}
+        {% endfor %}
+        {% if jefe.otro %}
+            <div><strong>OTRO:</strong> {{ jefe.otro }}</div>
+        {% endif %}
+    </div>
+</div>
+
+
+    <!-- Patrulleros -->
+    <div class="section">
+        <div class="section-title">PATRULLEROS</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>CÉDULA</th>
+                    <th>NOMBRES Y APELLIDOS</th>
+                    <th>TELÉFONO</th>
+                    <th>DIRECCIÓN</th>
+                    <th>CENTRO DE VOTACIÓN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in patrulleros %}
+                <tr>
+                    <td>{{ p.numero }}</td>
+                    <td>{{ p.cedula }}</td>
+                    <td>{{ p.nombres_apellidos }}</td>
+                    <td>{{ p.telefono }}</td>
+                    <td>{{ p.direccion }}</td>
+                    <td>{{ p.centro_votacion }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">No hay patrulleros registrados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()">Imprimir</button>
+    </div>
+</body>
+</html>

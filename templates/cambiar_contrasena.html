@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Contraseña</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .password-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+        .password-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .password-header h2 {
+            color: #343a40;
+            font-weight: 600;
+        }
+        .alert-primer-inicio {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            border-radius: 3px;
+        }
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .btn-cambiar {
+            background: #0d6efd;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-cambiar:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+        }
+        .password-toggle {
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .input-group {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="password-container">
+                    <div class="password-header">
+                        <h2>Cambiar Contraseña</h2>
+                        <p class="text-muted">Por seguridad, actualiza tu contraseña periódicamente</p>
+                    </div>
+
+                    {% if primer_inicio %}
+                    <div class="alert alert-primer-inicio d-flex align-items-center" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                        <div>
+                            <strong>Primer inicio:</strong> Por seguridad, debes cambiar tu contraseña inicial antes de continuar.
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" id="passwordForm">
+                        <div class="mb-4">
+                            <label for="actual" class="form-label">Contraseña Actual</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="actual" name="actual" required>
+                                <span class="password-toggle" onclick="togglePassword('actual')">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="nueva" class="form-label">Nueva Contraseña</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="nueva" name="nueva" required>
+                                <span class="password-toggle" onclick="togglePassword('nueva')">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
+                            <div class="password-strength" id="passwordStrength"></div>
+                            <div class="password-requirements">
+                                La contraseña debe contener al menos 8 caracteres, incluyendo mayúsculas, minúsculas y números.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmacion" class="form-label">Confirmar Nueva Contraseña</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" id="confirmacion" name="confirmacion" required>
+                                <span class="password-toggle" onclick="togglePassword('confirmacion')">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
+                            <div class="invalid-feedback" id="confirmError">Las contraseñas no coinciden</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg btn-cambiar">Cambiar Contraseña</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = field.nextElementSibling.querySelector('i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        // Validación de fortaleza de contraseña
+        const passwordInput = document.getElementById('nueva');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const confirmInput = document.getElementById('confirmacion');
+        const confirmError = document.getElementById('confirmError');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Longitud mínima
+            if (password.length >= 8) strength += 25;
+            
+            // Contiene mayúsculas
+            if (/[A-Z]/.test(password)) strength += 25;
+            
+            // Contiene minúsculas
+            if (/[a-z]/.test(password)) strength += 25;
+            
+            // Contiene números
+            if (/[0-9]/.test(password)) strength += 25;
+            
+            // Actualizar barra de fortaleza
+            passwordStrength.style.width = strength + '%';
+            
+            // Actualizar color según fortaleza
+            if (strength < 50) {
+                passwordStrength.style.backgroundColor = '#dc3545';
+            } else if (strength < 75) {
+                passwordStrength.style.backgroundColor = '#ffc107';
+            } else {
+                passwordStrength.style.backgroundColor = '#198754';
+            }
+        });
+        
+        // Validación de coincidencia de contraseñas
+        confirmInput.addEventListener('input', function() {
+            if (passwordInput.value !== confirmInput.value) {
+                confirmInput.classList.add('is-invalid');
+                confirmError.style.display = 'block';
+            } else {
+                confirmInput.classList.remove('is-invalid');
+                confirmError.style.display = 'none';
+            }
+        });
+        
+        // Validación del formulario
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            if (passwordInput.value !== confirmInput.value) {
+                e.preventDefault();
+                confirmInput.classList.add('is-invalid');
+                confirmError.style.display = 'block';
+                confirmInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

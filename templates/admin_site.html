@@ -1,48 +1,123 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Estilos adicionales para esta página */
-        .container {
-            display: flex; /* Habilitar flexbox para el contenedor principal */
-            flex-direction: column; /* Organizar los elementos en columna */
-            align-items: center; /* Centrar horizontalmente los elementos */
-            gap: 20px; /* Espacio entre las tarjetas */
-            padding: 20px;
+        /* Estilos específicos para la vista de Administración */
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            /* Crea una cuadrícula con columnas de ancho flexible, mínimo 180px */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px; /* Espacio entre las tarjetas de la cuadrícula */
+            max-width: 1200px; /* Ancho máximo para la cuadrícula, similar a tu .container base */
+            margin: 0 auto; /* Centrar la cuadrícula en la página */
+            padding: 20px; /* Padding interno para que no se pegue a los bordes */
+            box-sizing: border-box; /* Incluir padding en el ancho */
+        }
+
+        .dashboard-card {
+            background-color: white;
+            border: 1px solid #e0e0e0; /* Un borde más suave */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+            padding: 25px; /* Aumentar el padding para espacio interno */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transición suave al hover */
+            text-decoration: none; /* Quitar subrayado por defecto de los enlaces */
+            color: #333; /* Color de texto predeterminado */
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px); /* Pequeño levantamiento al pasar el ratón */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más intensa al hover */
+        }
+
+        .dashboard-card i {
+            font-size: 3.5em; /* Tamaño grande para los íconos */
+            margin-bottom: 15px; /* Espacio entre ícono y texto */
+            color: #1a237e; /* Color azul primario para los íconos */
+        }
+
+        .dashboard-card .card-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-card .card-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Columnas más pequeñas en móviles */
+                gap: 15px;
+            }
+            .dashboard-card {
+                padding: 20px;
+            }
+            .dashboard-card i {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* Una columna en pantallas muy pequeñas */
+            }
         }
     </style>
+    
     <div class="header">
         <h1>Administración</h1>
     </div>
     
-    <div class="container">
+    <div class="dashboard-grid">
         {% if current_user.is_admin %}
-        <div class="card">
-            <div class="btn-group">
-                <a href="{{ url_for('create_user') }}" class="btn btn-primary">Usuarios</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="btn-group">
-                <a href="" class="btn btn-primary">Jefes de Patrullas</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="btn-group">
-                <a href="{{ url_for('create_voting_center') }}" class="btn btn-primary">Centros de Votaciones</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="btn-group">
-                <a href="{{ url_for('create_identification') }}" class="btn btn-primary">Identificaciones</a>
-            </div>
-        </div>
-        <div class="card">
-            <div class="btn-group">
-                <a href="{{ url_for('export_excel') }}" class="btn btn-success">Exportar a Excel</a>
-            </div>
-        </div>
+        
+        <a href="{{ url_for('create_user') }}" class="dashboard-card">
+            <i class="fas fa-users"></i>
+            <div class="card-title">Usuarios</div>
+            <div class="card-description">Gestionar y crear cuentas de usuarios.</div>
+        </a>
+
+        <a href="" class="dashboard-card">
+            <i class="fas fa-user-shield"></i>
+            <div class="card-title">Jefes de Patrullas</div>
+            <div class="card-description">Administrar responsables de patrulla.</div>
+        </a>
+
+        <a href="{{ url_for('create_voting_center') }}" class="dashboard-card">
+            <i class="fas fa-landmark"></i>
+            <div class="card-title">Centros de Votación</div>
+            <div class="card-description">Configurar centros de votación.</div>
+        </a>
+
+        <a href="{{ url_for('create_identification') }}" class="dashboard-card">
+            <i class="fas fa-id-card"></i>
+            <div class="card-title">Identificaciones</div>
+            <div class="card-description">Definir tipos de identificación.</div>
+        </a>
+
+        <a href="{{ url_for('export_excel') }}" class="dashboard-card">
+            <i class="fas fa-file-excel"></i> 
+            <div class="card-title">Exportar a Excel</div>
+            <div class="card-description">Generar informes en formato Excel.</div>
+        </a>
+
         {% endif %}
     </div>
 {% endblock %}
-

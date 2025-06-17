@@ -6,7 +6,7 @@
     <title>Panel de Control</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .header { background-color: #333; color: white; padding: 15px; display: flex; justify-content: space-between; }
+        .header { background-color: #333; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
         .card { border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
         .card-header { background-color: #f5f5f5; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
@@ -16,11 +16,42 @@
         .btn-info { background-color: #17a2b8; color: white; }
         .btn-danger { background-color: #dc3545; color: white; }
         .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            opacity: 1; 
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .alert.fade-out {
+            opacity: 0; /* Lo hace completamente transparente */
+            transform: translateY(-20px); /* Opcional: lo mueve un poco hacia arriba mientras se desvanece */
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .alert-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+            border: 1px solid #faebcc;
+        }
+        .alert-info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div>Bienvenido, {{ current_user.nombre }} ({{ current_user.cedula }})</div>
+        <h2> Bienvenido,{{ current_user.person_in_charge }} ({{ current_user.id_number }})</h2>
         <div>
             <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Inicio</a>
             <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
@@ -44,13 +75,13 @@
             <div class="card-header">
                 <h2>Tu Patrulla</h2>
             </div>
-            <p><strong>Responsable:</strong> {{ jefe.responsable }}</p>
-            <p><strong>Cédula:</strong> {{ jefe.cedula }}</p>
-            <p><strong>Centro de Votación:</strong> {{ jefe.centro_votacion }}</p>
+            <p><strong>Responsable:</strong> {{ leader.person_in_charge }}</p>
+            <p><strong>Cédula:</strong> {{ leader.id_number }}</p>
+            <p><strong>Centro de Votación:</strong> {{ leader.voting_center.name }}</p>
             
-            <div class="btn-group">
-                <a href="{{ url_for('ver_patrulla', jefe_id=jefe.id) }}" class="btn btn-primary">Ver Detalles</a>
-                <a href="{{ url_for('imprimir_patrulla', jefe_id=jefe.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
+        <div class="btn-group">
+                <a href="{{ url_for('show_patrol', id_leader=leader.id) }}" class="btn btn-primary">Ver Detalles</a>
+                <a href="{{ url_for('print_patrol', id_leader=leader.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
             </div>
         </div>
         
@@ -60,11 +91,34 @@
                 <h2>Administración</h2>
             </div>
             <div class="btn-group">
-                <a href="{{ url_for('crear_usuario') }}" class="btn btn-primary">Crear Nuevo Usuario</a>
-                <a href="{{ url_for('exportar_excel') }}" class="btn btn-info">Exportar a Excel</a>
+                <a href="{{ url_for('create_user') }}" class="btn btn-primary">Crear Nuevo Usuario</a>
+                <a href="{{ url_for('create_voting_center') }}" class="btn btn-primary">Añadir Centro de Votación</a>
+                <a href="{{ url_for('create_identification') }}" class="btn btn-primary">Añadir Identificación</a>
+                <a href="{{ url_for('export_excel') }}" class="btn btn-info">Exportar a Excel</a>
             </div>
         </div>
         {% endif %}
     </div>
+    <script>
+        // Codigo para que los mensajes de alert solo se muestren 3 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todos los elementos con la clase 'alert' (tus mensajes flash)
+            const alerts = document.querySelectorAll('.alert');
+
+            // Itera sobre cada mensaje de alerta
+            alerts.forEach(alert => {
+                // Programa la función para que se ejecute después de 3 segundos (3000 milisegundos)
+                setTimeout(() => {
+                    // Añade la clase 'fade-out' para iniciar la animación de desvanecimiento
+                    alert.classList.add('fade-out');
+
+                    // Cuando la animación de desvanecimiento termine, elimina el elemento del DOM
+                    alert.addEventListener('transitionend', () => {
+                        alert.remove();
+                    });
+                }, 3000); // El tiempo en milisegundos (3000ms = 3 segundos)
+            });
+        });
+    </script>
 </body>
 </html>

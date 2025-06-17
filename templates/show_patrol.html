@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Patrulla {{ leader.responsable }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .header { background-color: #333; color: white; padding: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .section { background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
+        .section-title { background-color: #f0f0f0; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .info-group { margin-bottom: 15px; }
+        .info-label { font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        .btn { display: inline-block; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-right: 10px; border: none;}
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .actions-header { width: 150px; }
+        .actions-cell { display: flex; gap: 5px; }
+        .three-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .option-item { padding: 5px; }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .left-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        form {
+            margin: 0;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            opacity: 1; 
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .alert.fade-out {
+            opacity: 0; /* Lo hace completamente transparente */
+            transform: translateY(-20px); /* Opcional: lo mueve un poco hacia arriba mientras se desvanece */
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .alert-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+            border: 1px solid #faebcc;
+        }
+        .alert-info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+        }
+
+        /* Estilos del modal */
+        .modal {
+            /* display: none; <-- YA ESTÁ AQUÍ Y NO EN OTROS LUGARES */
+            position: fixed; /* Permanece en su lugar */
+            z-index: 1001; /* Se superpone a todo (valor alto) */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ancho completo */
+            height: 100%; /* Alto completo */
+            overflow: auto; /* Habilitar scroll si el contenido es muy largo */
+            background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
+            /* display: flex; <--- ESTO SE HA MOVIDO A JAVASCRIPT */
+            align-items: center; /* Centra verticalmente */
+            justify-content: center; /* Centra horizontalmente */
+        }
+    
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 500px; /* Ancho máximo del modal */
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative; /* Necesario para posicionar el botón de cerrar */
+            text-align: center; /* Centra el texto dentro del modal */
+        }
+    
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute; /* Posicionamiento absoluto dentro de modal-content */
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+    
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center; /* Centra los botones dentro del modal */
+            gap: 10px; /* Espacio entre los botones */
+        }
+    
+        .btn {
+            padding: 10px 20px; /* Botones ligeramente más grandes para el modal */
+            font-size: 16px;
+        }
+    
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+    
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Patrulla de {{ leader.person_in_charge }}</h1>
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="actions">
+            <div class="left-buttons">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Volver al Panel</a>
+                <a href="{{ url_for('print_patrol', id_leader = leader.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
+            </div>
+            <form id="deleteLeaderForm" action="{{ url_for('delete_leader', id_leader=leader.id) }}" method="POST">
+                <button type="submit" class="btn btn-danger">
+                    Eliminar Patrulla
+                </button>
+            </form>
+        </div>
+        
+        <!-- Sección 1: Responsable de Patrulla (solo lectura) -->
+        <div class="section">
+            <h2 class="section-title">RESPONSABLE DE PATRULLA</h2>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">Responsable:</div>
+                    <div>{{ leader.person_in_charge }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Cédula:</div>
+                    <div>{{ leader.id_number }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Centro de Votación:</div>
+                    <div>{{ leader.voting_center.name }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Teléfono:</div>
+                    <div>{{ leader.phone_number }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Sector:</div>
+                    <div>{{ leader.zone }}</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">IDENTIFICACIÓN DEL PATRULLERO</h2>
+            <div class="three-columns">
+                {% if identifications or leader.other_identification %}
+                    {% if identifications %}
+                        {% for identification in identifications %}
+                            <div class="option-item">
+                                <strong>{{ identification.identification.name|upper }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% if leader.other_identification %}
+                        <div class="option-item">
+                            <strong>OTRO: </strong> {{ leader.other_identification|upper }}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="option-item">
+                        <strong>NO SE LE ASIGNÓ NINGUNA IDENTIFICACIÓN</strong>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Sección 3: Tabla de Patrulleros con acciones -->
+        <div class="section">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>PATRULLEROS</h2>
+                {% if members|length < 21 %}
+                <a href="{{ url_for('add_member', id_leader=leader.id) }}"
+                class="btn btn-success">Agregar Patrullero</a>
+                {% endif %}
+                
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>CÉDULA</th>
+                        <th>NOMBRES Y APELLIDOS</th>
+                        <th>TELÉFONO</th>
+                        <th>DIRECCIÓN</th>
+                        <th>CENTRO DE VOTACIÓN</th>
+                        <th class="actions-header">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ member.id_number }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.phone_number }}</td>
+                        <td>{{ member.direction }}</td>
+                        <td>{{ member.member_voting_center.name }}</td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('edit_member', id_member=member.id) }}" class="btn btn-warning">Editar</a>
+                            <form class="delete-member-form" method="POST" action="{{ url_for('delete_member', id_member=member.id) }}">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No hay patrulleros registrados</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p style="margin-top: 15px;"><strong>Total de patrulleros:</strong> {{ members|length }} / 21</p>
+        </div>
+    </div>
+    <div id="confirmationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modalMessage">¿Estás seguro de que quieres eliminar esto?</p>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="btn btn-danger">Confirmar</button>
+                <button id="cancelDelete" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Lógica para mensajes flash (alerts) ---
+            // Selecciona todos los elementos con la clase 'alert' (tus mensajes flash)
+            const alerts = document.querySelectorAll('.alert');
+
+            // Itera sobre cada mensaje de alerta
+            alerts.forEach(alert => {
+                // Programa la función para que se ejecute después de 3 segundos (3000 milisegundos)
+                setTimeout(() => {
+                    // Añade la clase 'fade-out' para iniciar la animación de desvanecimiento
+                    alert.classList.add('fade-out');
+
+                    // Cuando la animación de desvanecimiento termine, elimina el elemento del DOM
+                    // { once: true } asegura que el evento solo se ejecute una vez
+                    alert.addEventListener('transitionend', () => {
+                        alert.remove();
+                    }, { once: true }); 
+                }, 3000); // El tiempo en milisegundos (3000ms = 3 segundos)
+            });
+
+            // --- Lógica para el modal de confirmación de eliminación ---
+            const modal = document.getElementById('confirmationModal');
+            const modalMessage = document.getElementById('modalMessage');
+            const confirmButton = document.getElementById('confirmDelete');
+            const cancelButton = document.getElementById('cancelDelete');
+            const closeButton = document.querySelector('.close-button');
+
+            let currentFormToSubmit = null; // Variable para guardar la referencia del formulario a enviar
+
+            // Función para abrir el modal
+            function openModal(message, form) {
+                modalMessage.textContent = message; // Establece el mensaje en el modal
+                currentFormToSubmit = form; // Guarda la referencia al formulario que activó el modal
+                modal.style.display = 'flex'; // Muestra el modal (usando flex para centrar)
+            }
+
+            // Función para cerrar el modal
+            function closeModal() {
+                modal.style.display = 'none'; // Oculta el modal
+                currentFormToSubmit = null; // Limpia la referencia del formulario
+            }
+
+            // Eventos para cerrar el modal
+            closeButton.addEventListener('click', closeModal); // Botón 'X'
+            cancelButton.addEventListener('click', closeModal); // Botón 'Cancelar'
+            window.addEventListener('click', function(event) {
+                // Si el clic fue fuera del contenido del modal, cierra el modal
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+
+            // Evento para confirmar la eliminación
+            confirmButton.addEventListener('click', function() {
+                if (currentFormToSubmit) {
+                    currentFormToSubmit.submit(); // Envía el formulario almacenado
+                }
+                closeModal(); // Cierra el modal de todas formas
+            });
+
+            // Interceptar el envío del formulario para "Eliminar Patrulla"
+            // Se le añadió un id="deleteLeaderForm" al formulario para seleccionarlo más fácil
+            const deleteLeaderForm = document.getElementById('deleteLeaderForm');
+            if (deleteLeaderForm) {
+                deleteLeaderForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Evita el envío del formulario por defecto
+                    openModal('¿Estás seguro de eliminar esta patrulla? Los miembros e identificaciones serán eliminados', this);
+                });
+            }
+
+            // Interceptar el envío de los formularios para "Eliminar Patrullero" (filas de la tabla)
+            // Se añadió class="delete-member-form" a estos formularios
+            document.querySelectorAll('.delete-member-form').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Evita el envío del formulario por defecto
+                    openModal('¿Estás seguro de eliminar este patrullero?', this);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

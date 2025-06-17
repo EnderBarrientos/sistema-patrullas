@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        /* Estilos adicionales para esta página */
+        .container {
+            display: flex; /* Habilitar flexbox para el contenedor principal */
+            flex-direction: column; /* Organizar los elementos en columna */
+            align-items: center; /* Centrar horizontalmente los elementos */
+            gap: 20px; /* Espacio entre las tarjetas */
+            padding: 20px;
+        }
+    </style>
+    <div class="header">
+        <h1>Administración</h1>
+    </div>
+    
+    <div class="container">
+        {% if current_user.is_admin %}
+        <div class="card">
+            <div class="btn-group">
+                <a href="{{ url_for('create_user') }}" class="btn btn-primary">Usuarios</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="btn-group">
+                <a href="" class="btn btn-primary">Jefes de Patrullas</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="btn-group">
+                <a href="{{ url_for('create_voting_center') }}" class="btn btn-primary">Centros de Votaciones</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="btn-group">
+                <a href="{{ url_for('create_identification') }}" class="btn btn-primary">Identificaciones</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="btn-group">
+                <a href="{{ url_for('export_excel') }}" class="btn btn-success">Exportar a Excel</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

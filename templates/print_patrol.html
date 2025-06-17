@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Patrulla 1x10 - {{ jefe.responsable }}</title>
+    <title>Patrulla 1x10 - {{ leader.person_in_charge }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; font-size: 12px; }
         h1 { text-align: center; font-size: 16px; margin-bottom: 20px; }
@@ -26,53 +26,38 @@
     <div class="section">
         <div class="section-title">RESPONSABLE DE PATRULLA</div>
         <div class="info-grid">
-            <div class="info-item"><strong>Responsable:</strong> {{ jefe.responsable }}</div>
-            <div class="info-item"><strong>Cédula:</strong> {{ jefe.cedula }}</div>
-            <div class="info-item"><strong>Centro de Votación:</strong> {{ jefe.centro_votacion }}</div>
-            <div class="info-item"><strong>Teléfono:</strong> {{ jefe.telefono }}</div>
+            <div class="info-item"><strong>Responsable:</strong> {{ leader.person_in_charge }}</div>
+            <div class="info-item"><strong>Cédula:</strong> {{ leader.id_number }}</div>
+            <div class="info-item"><strong>Centro de Votación:</strong> {{ leader.voting_center.name }}</div>
+            <div class="info-item"><strong>Teléfono:</strong> {{ leader.phone_number }}</div>
         </div>
     </div>
 
     <!-- Identificación -->
-    <!-- Identificación -->
-<div class="section">
-    <div class="section-title">IDENTIFICACIÓN DEL PATRULLERO</div>
-    <div class="three-columns">
-        {% for field in [
-            ('EPM', jefe.epm),
-            ('UBCH', jefe.ubch),
-            ('COMUNIDAD', jefe.comunidad),
-            ('CALLE', jefe.calle),
-            ('MILITANTE', jefe.militante),
-            ('CLAP', jefe.clap),
-            ('MGM', jefe.mgm),
-            ('MUJERES', jefe.mujeres),
-            ('SV', jefe.sv),
-            ('MILICIA', jefe.milicia),
-            ('CONSEJO COMUNAL', jefe.consejo_comunal),
-            ('COMUNA', jefe.comuna),
-            ('CIR COMUNAL', jefe.cir_comunal),
-            ('GPPSB', jefe.gppsb),
-            ('MOV SOCIALES', jefe.mov_sociales),
-            ('SALUD', jefe.salud),
-            ('EDUCACION', jefe.educacion),
-            ('CORPOELEC', jefe.corpoelec),
-            ('H2O', jefe.h2o),
-            ('SAREN', jefe.saren),
-            ('POLICIA', jefe.policia),
-            ('FFM', jefe.ffm),
-            ('LINDER', jefe.linder)
-        ] %}
-            {% if field[1] %}
-                <div><strong>{{ field[0] }}:</strong> X</div>
+    <div class="section">
+        <div class="section-title">IDENTIFICACIÓN DEL PATRULLERO</div>
+        <div class="three-columns">
+            {% if identifications or leader.other_identification %}
+                {% if identifications %}
+                    {% for identification in identifications %}
+                        <div class="option-item">
+                            <strong>{{ identification.identification.name|upper }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                {% if leader.other_identification %}
+                    <div class="option-item">
+                        <strong>OTRO: </strong> {{ leader.other_identification|upper }}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="option-item">
+                    <strong>NO SE LE ASIGNÓ NINGUNA IDENTIFICACIÓN</strong>
+                </div>
             {% endif %}
-        {% endfor %}
-        {% if jefe.otro %}
-            <div><strong>OTRO:</strong> {{ jefe.otro }}</div>
-        {% endif %}
+        </div>
     </div>
-</div>
-
 
     <!-- Patrulleros -->
     <div class="section">
@@ -89,14 +74,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for p in patrulleros %}
+                {% for member in members %}
                 <tr>
-                    <td>{{ p.numero }}</td>
-                    <td>{{ p.cedula }}</td>
-                    <td>{{ p.nombres_apellidos }}</td>
-                    <td>{{ p.telefono }}</td>
-                    <td>{{ p.direccion }}</td>
-                    <td>{{ p.centro_votacion }}</td>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ member.id_number }}</td>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.phone_number }}</td>
+                    <td>{{ member.direction }}</td>
+                    <td>{{ member.member_voting_center.name  }}</td>
                 </tr>
                 {% else %}
                 <tr>

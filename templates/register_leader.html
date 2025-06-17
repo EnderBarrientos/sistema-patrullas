@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Patrulla 1x10</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .header { background-color: #333; color: white; padding: 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .section { background-color: white; border: 1px solid #ddd; border-radius: 5px; padding: 20px; margin-bottom: 20px; }
+        .section-title { background-color: #f0f0f0; padding: 10px; margin: -20px -20px 20px; border-bottom: 1px solid #ddd; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background-color: #218838; }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            opacity: 1; 
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .alert.fade-out {
+            opacity: 0; /* Lo hace completamente transparente */
+            transform: translateY(-20px); /* Opcional: lo mueve un poco hacia arriba mientras se desvanece */
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .alert-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+            border: 1px solid #faebcc;
+        }
+        .alert-info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+        }
+        .checkbox-group { display: flex; align-items: center; }
+        .checkbox-group input { width: auto; margin-right: 10px; }
+        .btn { display: inline-block; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-right: 10px; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .actions-header { width: 150px; }
+        .actions-cell { display: flex; gap: 5px; }
+        .three-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .option-item { padding: 5px; }
+        .actions {
+            margin: 10px 0 20px 0; /* 10px arriba, 0 derecha, 20px abajo, 0 izquierda */
+        }
+        /* Nuevos estilos para el multiselect mejorado */
+        .checkbox-multiselect {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        
+        .checkbox-option:hover {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-option.selected {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Registro de Patrulla 1x10</h1>
+    </div>
+    
+    <div class="container">
+        <div class="actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Volver al Panel</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('register_leader') }}">
+            <!-- Sección 1: Responsable de Patrulla -->
+            <div class="section">
+                <h2 class="section-title">RESPONSABLE DE PATRULLA</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Responsable:</label>
+                        <input type="text" name="person_in_charge" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Cédula:</label>
+                        <input type="text" name="id_number_leader" required minlength="4">
+                        <small>No debe estar registrada como patrullero o jefe en otra patrulla</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Centro de Votación:</label>
+                        <select name="id_voting_center" required style="height: 40px; font-size: 16px; padding: 8px; width: 100%; max-width: 400px; border-radius: 20px">
+                            <option value="">Seleccione un centro...</option>
+                            {% for center in voting_centers %}
+                                <option value="{{ center.id }}">{{ center.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="text" name="phone_number">
+                    </div>
+                    <div class="form-group">
+                        <label>Sector:</label>
+                        <input type="text" name="zone">
+                    </div>
+					
+                </div>
+            </div>
+
+            <!-- Sección 2: Identificación del Patrullero -->
+            <div class="section">
+                <h2 class="section-title">IDENTIFICACIÓN DEL PATRULLERO</h2>
+                <div class="form-group">
+                    <label>Selecciona las identificaciones:</label>
+                    <div class="checkbox-multiselect" id="identifications-container">
+                        {% for identification in identifications %}
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="identifications[]" value="{{ identification.id }}">
+                            {{ identification.name|upper }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Otro:</label>
+                    <input type="text" name="other_identification">
+                </div>
+            </div>  
+
+            <div class="section">
+                <h2 class="section-title">PATRULLEROS</h2>
+                <p><strong>Nota:</strong> Cada cédula debe ser única y no puede estar registrada como jefe o patrullero en otra patrulla</p>
+            
+                <div id="patrol-members-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>CÉDULA</th>
+                                <th>NOMBRES Y APELLIDOS</th>
+                                <th>TELÉFONO</th>
+                                <th>DIRECCIÓN</th>
+                                <th>CENTRO DE VOTACIÓN</th>
+                                <th>Acciones</th> {# Added for potential remove button #}
+                            </tr>
+                        </thead>
+                        <tbody id="patrol-members-tbody">
+                            </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-primary" id="add-patrol-member-btn" style="margin-top: 15px;">Añadir Patrullero</button>
+            </div>
+
+            <button type="submit" class="btn">Guardar Patrulla</button>
+        </form>
+    </div> 
+
+    <script>
+         // Actualizar estilo cuando cambia el checkbox
+        document.querySelectorAll('#identifications-container input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateCheckboxStyle(this);
+            });
+            
+            // Inicializar estilos
+            updateCheckboxStyle(checkbox);
+        });
+        
+        function updateCheckboxStyle(checkbox) {
+            const label = checkbox.closest('.checkbox-option');
+            if (checkbox.checked) {
+                label.classList.add('selected');
+            } else {
+                label.classList.remove('selected');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.getElementById('patrol-members-tbody');
+            const addMemberBtn = document.getElementById('add-patrol-member-btn');
+            let memberCounter = 0; // Use a different name to avoid confusion with internal 'i'
+
+            function createMemberRow() {
+                const row = document.createElement('tr');
+                // We don't need a unique ID for the row itself if we re-index everything on delete
+                // The names will be re-assigned anyway.
+                row.innerHTML = `
+                    <td>${memberCounter + 1}</td>
+                    <td><input type="text" name="member_id_number_${memberCounter}" required></td>
+                    <td><input type="text" name="member_name_${memberCounter}" required></td>
+                    <td><input type="text" name="member_phone_${memberCounter}"></td>
+                    <td><input type="text" name="member_direction_${memberCounter}"></td>
+                    <td>
+                        <select name="member_id_voting_center_${memberCounter}" style="height: 35px; font-size: 14px; padding: 8px; width: 100%; max-width: 400px; border-radius: 20px">
+                            <option value="">Mismo que el líder</option>
+                            {% for vc in voting_centers %}
+                            <option value="{{ vc.id }}">{{ vc.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-member-btn">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                memberCounter++; // Increment for the next member
+                updateRowIndexes(); // Call this to ensure consistent numbering
+            }
+
+            // Add event listener for the "Add Patrullero" button
+            addMemberBtn.addEventListener('click', createMemberRow);
+
+            // Add event listener for removing a member (delegated to tbody)
+            tbody.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-member-btn')) {
+                    const rowToRemove = event.target.closest('tr'); // Find the closest table row
+                    if (rowToRemove) {
+                        rowToRemove.remove();
+                        updateRowIndexes(); // Re-index all remaining rows
+                    }
+                }
+            });
+
+            // --- NEW/MODIFIED FUNCTION: Re-index all rows ---
+            function updateRowIndexes() {
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    // Update the displayed row number
+                    row.querySelector('td:first-child').textContent = index + 1;
+
+                    // Update the 'name' attributes for all input fields in this row
+                    row.querySelectorAll('input, select').forEach(input => {
+                        const oldName = input.name;
+                        if (oldName) { // Make sure the element has a name attribute
+                            // Extract the prefix (e.g., "member_id_number_")
+                            const nameParts = oldName.split('_');
+                            const prefix = nameParts.slice(0, nameParts.length - 1).join('_');
+                            input.name = `${prefix}_${index}`; // Assign the new index
+                        }
+                    });
+                });
+                // Update the memberCounter to reflect the actual number of rows
+                memberCounter = rows.length;
+            }
+
+            // Add one initial row when the page loads
+            createMemberRow();
+        });
+
+        // Codigo para que los mensajes de alert solo se muestren 3 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todos los elementos con la clase 'alert' (tus mensajes flash)
+            const alerts = document.querySelectorAll('.alert');
+
+            // Itera sobre cada mensaje de alerta
+            alerts.forEach(alert => {
+                // Programa la función para que se ejecute después de 3 segundos (3000 milisegundos)
+                setTimeout(() => {
+                    // Añade la clase 'fade-out' para iniciar la animación de desvanecimiento
+                    alert.classList.add('fade-out');
+
+                    // Cuando la animación de desvanecimiento termine, elimina el elemento del DOM
+                    alert.addEventListener('transitionend', () => {
+                        alert.remove();
+                    });
+                }, 3000); // El tiempo en milisegundos (3000ms = 3 segundos)
+            });
+        });
+    </script>
+</body>
+</html>

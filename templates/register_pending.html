@@ -3,7 +3,7 @@
 {% block content %}
     <div class="header">
         <h1>Panel de Control</h1>
-        <h2>Bienvenido, {{ current_user.nombre }}</h2>
+        <h2>Bienvenido, {{ current_user.name }}</h2>
     </div>
     
     <div style="text-align: center; padding: 50px;">
@@ -13,7 +13,7 @@
         </p>
         
         <div class="actions">
-            <a href="{{ url_for('registro_jefe') }}" class="btn btn-success">
+            <a href="{{ url_for('register_leader') }}" class="btn btn-success">
                 Registrar Nueva Patrulla
             </a>
         </div>

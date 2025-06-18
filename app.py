@@ -226,7 +226,7 @@ def change_password():
 @login_required
 def logout():
     logout_user()
-    flash('Has cerrado sesión correctamente', 'success')
+    flash('Has cerrado sesión correctamente.', 'success')
     return redirect(url_for('index'))
 
 #------------------------------------------------------------------------------#
@@ -996,6 +996,39 @@ def export_excel():
         # app.logger.error(f"Error generating Excel report: {e}", exc_info=True)
         flash(f'Error al generar el reporte Excel: {str(e)}', 'danger')
         return redirect(url_for('dashboard'))
+    
+# Error 404 - Página no encontrada
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template(
+        'error_base.html',
+        error_code=404,
+        error_name="Página no encontrada",
+        error_description="La URL que buscas no existe. ¿Quizás un error de escritura?",
+        icon="🔍"
+    ), 404
+
+# Error 405 - Método no permitido
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return render_template(
+        'error_base.html',
+        error_code=405,
+        error_name="Método no permitido",
+        error_description="Oops! Esta acción no está permitida.",
+        icon="🚫"
+    ), 405
+
+# Error 500 - Error del servidor
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template(
+        'error_base.html',
+        error_code=500,
+        error_name="Error del servidor",
+        error_description="Algo salió mal. Por favor, intenta más tarde.",
+        icon="💥"
+    ), 500
 
 if __name__ == '__main__':
     with app.app_context():

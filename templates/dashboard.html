@@ -77,7 +77,7 @@
             </div>
             <p><strong>Responsable:</strong> {{ leader.person_in_charge }}</p>
             <p><strong>Cédula:</strong> {{ leader.id_number }}</p>
-            <p><strong>Centro de Votación:</strong> {{ leader.voting_center.name }}</p>
+            <p><strong>Centro de Votación:</strong> {{ leader.voting_center.name|upper }}</p>
             
         <div class="btn-group">
                 <a href="{{ url_for('show_patrol', id_leader=leader.id) }}" class="btn btn-primary">Ver Detalles</a>

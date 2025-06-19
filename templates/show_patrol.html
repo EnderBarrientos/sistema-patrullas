@@ -173,7 +173,7 @@
                 </div>
                 <div class="info-group">
                     <div class="info-label">Centro de Votación:</div>
-                    <div>{{ leader.voting_center.name }}</div>
+                    <div>{{ leader.voting_center.name|upper }}</div>
                 </div>
                 <div class="info-group">
                     <div class="info-label">Teléfono:</div>
@@ -241,7 +241,7 @@
                         <td>{{ member.name }}</td>
                         <td>{{ member.phone_number }}</td>
                         <td>{{ member.direction }}</td>
-                        <td>{{ member.member_voting_center.name }}</td>
+                        <td>{{ member.member_voting_center.name|upper }}</td>
                         <td class="actions-cell">
                             <a href="{{ url_for('edit_member', id_member=member.id) }}" class="btn btn-warning">Editar</a>
                             <form class="delete-member-form" method="POST" action="{{ url_for('delete_member', id_member=member.id) }}">

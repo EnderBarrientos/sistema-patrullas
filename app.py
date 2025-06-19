@@ -851,9 +851,9 @@ def export_excel():
             identification_names = []
             for li in leader.identifications:
                 if li.identification:
-                    identification_names.append(li.identification.name)
+                    identification_names.append(li.identification.name.upper())
             if leader.other_identification:
-                identification_names.append(f"OTRO: {leader.other_identification}")
+                identification_names.append(f"OTRO: {leader.other_identification.upper()}")
 
             leaders_data.append({
                 'ID Jefe': leader.id,
@@ -861,7 +861,7 @@ def export_excel():
                 'Cédula Jefe': leader.id_number,
                 'Teléfono Jefe': leader.phone_number,
                 'Zona/Sector Jefe': leader.zone,
-                'Centro de Votación Jefe': leader.voting_center.name if leader.voting_center else 'N/A',
+                'Centro de Votación Jefe': leader.voting_center.name.upper() if leader.voting_center else 'N/A',
                 'Identificaciones': ", ".join(identification_names) if identification_names else 'Ninguna',
                 'Usuario Asociado': leader.user.name if leader.user else 'Sin usuario'
             })
@@ -881,7 +881,7 @@ def export_excel():
                 'Nombres y Apellidos Patrullero': member.name,
                 'Teléfono Patrullero': member.phone_number,
                 'Dirección Patrullero': member.direction,
-                'Centro de Votación Patrullero': member.member_voting_center.name if member.member_voting_center else 'N/A',
+                'Centro de Votación Patrullero': member.member_voting_center.name.upper() if member.member_voting_center else 'N/A',
                 'Fecha Creación Patrullero': member.created_at.strftime("%Y-%m-%d %H:%M:%S") if member.created_at else 'N/A',
                 'ID Jefe Asociado': member.id_patrol_leader,
                 'Responsable Jefe Asociado': member.leader.person_in_charge if member.leader else 'N/A',
@@ -902,6 +902,7 @@ def export_excel():
             'Responsable Jefe Asociado (Usuario)': user.leader.person_in_charge if user.leader else 'Sin patrulla'
         } for user in users]
 
+        # Resto del código permanece igual...
         # Crear DataFrames (ya estarán ordenados por la consulta SQL)
         leaders_df = pd.DataFrame(leaders_data)
         members_df = pd.DataFrame(members_data)

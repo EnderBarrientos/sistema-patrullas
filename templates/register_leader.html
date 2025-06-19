@@ -142,7 +142,7 @@
                         <select name="id_voting_center" required style="height: 40px; font-size: 16px; padding: 8px; width: 100%; max-width: 400px; border-radius: 20px">
                             <option value="">Seleccione un centro...</option>
                             {% for center in voting_centers %}
-                                <option value="{{ center.id }}">{{ center.name }}</option>
+                                <option value="{{ center.id }}">{{ center.name|upper }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -250,7 +250,7 @@
                         <select name="member_id_voting_center_${memberCounter}" style="height: 35px; font-size: 14px; padding: 8px; width: 100%; max-width: 400px; border-radius: 20px">
                             <option value="">Mismo que el líder</option>
                             {% for vc in voting_centers %}
-                            <option value="{{ vc.id }}">{{ vc.name }}</option>
+                            <option value="{{ vc.id }}">{{ vc.name|upper }}</option>
                             {% endfor %}
                         </select>
                     </td>

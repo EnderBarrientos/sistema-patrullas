@@ -81,7 +81,7 @@
             {% for center in centers %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ center.name }}</td>
+                <td>{{ center.name|upper }}</td>
                 <td>{{ center.description }}</td>
                 <td class="actions-cell">
                     <form class="delete-center-form" method="POST" action="{{ url_for('delete_center', id_center=center.id) }}">

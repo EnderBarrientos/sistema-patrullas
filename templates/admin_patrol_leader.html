@@ -27,7 +27,7 @@
                 <td>{{ leader.PatrolLeader.person_in_charge }}</td>
                 <td>{{ leader.PatrolLeader.phone_number }}</td>
                 <td>{{ leader.PatrolLeader.zone }}</td>
-                <td>{{ leader.VotingCenter.name }}</td>
+                <td>{{ leader.VotingCenter.name|upper }}</td>
                 <td class="actions-cell">
                 <a href="{{ url_for('print_patrol', id_leader = leader.PatrolLeader.id) }}" target='_blank' class="btn btn-success">Imprimir Patrulla</a>
                 </td>

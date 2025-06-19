@@ -44,7 +44,7 @@
         <div class="info-grid">
             <div class="info-item"><strong>Responsable:</strong> {{ leader.person_in_charge }}</div>
             <div class="info-item"><strong>Cédula:</strong> {{ leader.id_number }}</div>
-            <div class="info-item"><strong>Centro de Votación:</strong> {{ leader.voting_center.name }}</div>
+            <div class="info-item"><strong>Centro de Votación:</strong> {{ leader.voting_center.name|upper }}</div>
             <div class="info-item"><strong>Teléfono:</strong> {{ leader.phone_number }}</div>
         </div>
     </div>
@@ -100,7 +100,7 @@
                     <td>{{ member.name }}</td>
                     <td>{{ member.phone_number }}</td>
                     <td>{{ member.direction }}</td>
-                    <td>{{ member.member_voting_center.name }}</td>
+                    <td>{{ member.member_voting_center.name|upper }}</td>
                 </tr>
                 {% else %}
                 <tr>

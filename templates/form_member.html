@@ -91,7 +91,7 @@
                     <option value="">Seleccione un centro...</option>
                     {% for center in voting_centers %}
                         <option value="{{ center.id }}" {% if member and member.id_voting_center == center.id %}selected{% endif %}>
-                            {{ center.name }}
+                            {{ center.name|upper }}
                         </option>
                     {% endfor %}
                 </select>

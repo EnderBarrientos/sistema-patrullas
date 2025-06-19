@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
     <div class="header">
         <h1>Sistema de Gestión de Patrullas 1x10</h1>
@@ -7,6 +6,9 @@
     </div>
     
     <div style="text-align: center; margin: 50px 0;">
+        <img src="{{ url_for('static', filename='main.jpg') }}" 
+        style="width: 100%; max-width: 400px; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+        alt="Sistema de Gestión de Patrullas">
         <h2 style="color: #1a237e;">Bienvenido al sistema de registro de patrullas</h2>
         {% if not current_user.is_authenticated %}
         <p style="font-size: 18px; max-width: 800px; margin: 20px auto;">

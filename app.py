@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from flask import (Flask, flash, make_response, redirect, render_template,
                     request, send_file, url_for)
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
+                        login_user, logout_user)
 from flask_sqlalchemy import SQLAlchemy
 from openpyxl.styles import Font, PatternFill, Alignment # Asegúrate de que Alignment esté importado
 from openpyxl.utils import get_column_letter
@@ -21,7 +21,7 @@ from xhtml2pdf import pisa
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')

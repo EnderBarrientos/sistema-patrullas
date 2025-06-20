@@ -267,13 +267,12 @@ def admin_site():
 @app.route('/admin/user', methods=['GET', 'POST'])
 @login_required
 def admin_user():
-    
     if not current_user.is_admin:
         flash('Acceso no autorizado', 'danger')
         return redirect(url_for('dashboard'))
     
-    # Filtrar usuarios excluyendo al usuario actual
-    users = User.query.filter(User.id != current_user.id).all()
+    # Filtrar usuarios excluyendo al usuario actual y ordenar por ID
+    users = User.query.filter(User.id != current_user.id).order_by(User.id).all()
     
     return render_template('admin_user.html', users=users)
 
@@ -309,6 +308,29 @@ def create_user():
         return redirect(url_for('admin_user'))
     
     return render_template('create_user.html')
+
+@app.route('/admin/user/reset-password/<int:id_user>', methods=['POST'])
+@login_required
+def reset_password(id_user):
+    if not current_user.is_admin:
+        flash('Acceso no autorizado', 'danger')
+        return redirect(url_for('dashboard'))
+    
+    user = User.query.get_or_404(id_user)
+    print(user)
+    
+    try:   
+        hashed_pw = generate_password_hash('123456', method='pbkdf2:sha256')
+        user.password = hashed_pw
+        user.first_login = True
+        db.session.commit()
+        
+        flash(f'Contraseña de {user.name} restablecida a 123456', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al restablecer contraseña: {str(e)}', 'danger')
+    
+    return redirect(url_for('admin_user'))
 
 
 #------------------------------------------------------------------------------#
@@ -898,8 +920,8 @@ def export_excel():
             'Nombre Usuario': user.name,
             'Es Administrador': 'Sí' if user.is_admin else 'No',
             'Primera Sesión': 'Sí' if user.first_login else 'No',
-            'ID Jefe Asociado (Usuario)': user.id_patrol_leader,
-            'Responsable Jefe Asociado (Usuario)': user.leader.person_in_charge if user.leader else 'Sin patrulla'
+            'ID Jefe Asociado (Usuario)': user.id_patrol_leader if user.leader else 'No registrado',
+            'Responsable Jefe Asociado (Usuario)': user.leader.person_in_charge if user.leader else 'No registrado'
         } for user in users]
 
         # Resto del código permanece igual...

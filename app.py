@@ -654,9 +654,9 @@ def show_patrol(id_leader):
 @app.route('/delete-leader/<int:id_leader>', methods=['POST'])
 @login_required
 def delete_leader(id_leader):
-    # if not current_user.is_admin:
-    #     flash('No tienes permisos para realizar esta acción', 'danger')
-    #     return redirect(url_for('dashboard'))
+    if not current_user.is_admin:
+        flash('No tienes permisos para realizar esta acción', 'danger')
+        return redirect(url_for('dashboard'))
     
     leader = PatrolLeader.query.get_or_404(id_leader)
     

@@ -7,7 +7,7 @@ from io import BytesIO
 import pandas as pd
 from dotenv import load_dotenv
 from flask import (Flask, flash, make_response, redirect, render_template,
-                    request, send_file, url_for)
+                    request, send_file, url_for, jsonify)
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                         login_user, logout_user)
 from flask_sqlalchemy import SQLAlchemy
@@ -628,6 +628,21 @@ def register_leader():
     
     return render_template('register_leader.html', user=current_user, voting_centers=voting_centers, identifications=identifications)
 
+#------------------------------------------------------------------------------#
+    # Verificar Cédulas
+#------------------------------------------------------------------------------#
+
+@app.route('/verificar-cedulas', methods=['POST'])
+@login_required
+def verificar_cedulas():
+    data = request.get_json()
+    cedulas = data.get('cedulas', [])
+    
+    for cedula in cedulas:
+        if id_number_exist(cedula):
+            return jsonify({'existen': True, 'cedula': cedula})
+    
+    return jsonify({'existen': False})
 #------------------------------------------------------------------------------#
     # Mostrar Patrulla
 #------------------------------------------------------------------------------#
